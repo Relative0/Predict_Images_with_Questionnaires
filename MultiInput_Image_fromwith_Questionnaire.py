@@ -44,11 +44,11 @@ import tensorflow as tf
 from PIL import Image
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 
-from Questionnaire import createQuestionnaire, load_Subject_Questions
+from Questionnaire import createQuestionnaire, load_Subject_Questions, write_questionnaires_to_file
 from Image import Questionnaire_Image, load_images, LabelImage, write_greyscaleImage_toFile
 from MixedData_Label_with_Image import createmodel, train
 from DimensionalityBinning import DimensionalBinChoice
-from SupportFunctions import BinConfigurations
+from SupportFunctions import BinConfigurations, Create_test_Data
 
 
 # width = height = 3;  imageSize = (width, height)
@@ -59,7 +59,8 @@ path = "./ImageWithQuestion"; subjectScores = "Synthetic_Questionnaire_Answers.t
 scorefile_path = path + "/" + subjectScores
 
 width = height = int(math.ceil(math.sqrt(Questions)))
-AllSubjectsAnswers = createQuestionnaire(Subjects,Questions,scorefile_path)
+AllSubjectsAnswers = createQuestionnaire(Subjects, Questions)
+write_questionnaires_to_file(scorefile_path, AllSubjectsAnswers)
 # Write Subjects Questionnaires to file
 
 QuestionnaireDF = pd.DataFrame.from_records(AllSubjectsAnswers)
@@ -115,14 +116,28 @@ SubjectsQuestions_df = load_Subject_Questions(scorefile_path)
 # Sum_of_Scores = SubjectsQuestions_df.iloc[:, :].sum(axis=1)
 # SubjectsQuestions_df["Sum_of_Scores"] = Sum_of_Scores
 SubjectsQuestions_df["Bin"] = output_array
-load_images(SubjectsQuestions_df,path)
+# load_images(SubjectsQuestions_df,path)
 
 network, optimizer, loss_function = createmodel()
 
+trained_network = train(network,optimizer,loss_function,300,input_images,input_number,output_array)
+print(trained_network.summary())
 
-model = train(network,optimizer,loss_function,300,input_images,input_number,output_array)
-print(network.summary())
-print(model.summary())
+network_output = trained_network(input_images,input_number)
+
+
+Create_test_Data(network_output, Questions, Subjects, width, height)
+
+preds = np.argmax(network_output, axis=1)
+acc = 0
+for i in range(len(input_images)):
+    if (preds[i] == output_array[i]):
+        acc += 1
+
+print("Accuracy: ", acc / len(input_images) * 100, "%")
+
+
+
 # preds = np.argmax(network_output, axis=1)
 #
 # predIdxs = model.predict(input_number)

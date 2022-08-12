@@ -30,8 +30,6 @@ import glob
 
 # for each column, need to translate that to a pixel value
 
-from SupportFunctions import merge_Lists
-
 
 def multiply_pixel(n):
     # Need to make maxval dependent on log or something.
@@ -82,6 +80,7 @@ def load_images(df, inputPath):
 			inputImages.append(image)
 
 def Questionnaire_Image(width=5, height=5, Item_vals=0):
+    from SupportFunctions import merge_Lists
     # Apply the function higher_power to all elements in the Item_vals list.
     empowered_list = list(map(multiply_pixel, Item_vals))
     # Create a list as long as the number of pixels in the new image.

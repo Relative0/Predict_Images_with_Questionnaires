@@ -1,6 +1,6 @@
 import pandas as pd
 
-def createQuestionnaire(Subjects,NumberofQuestions,scorefile_path):
+def createQuestionnaire(Subjects, NumberofQuestions):
     AllAnswers = []
     for x in range(Subjects):
         a, b = findweights()
@@ -10,7 +10,7 @@ def createQuestionnaire(Subjects,NumberofQuestions,scorefile_path):
         AllAnswers.append(AnsweredQuestion)
         # ListofVals.append(DirichletProbabilities.tolist())
         # QuestionsandProbabilities.append([AnsweredQuestion, DirichletProbabilities])
-    write_questionnaires_to_file(scorefile_path, AllAnswers)
+
     return  AllAnswers
 import numpy as np
 import os

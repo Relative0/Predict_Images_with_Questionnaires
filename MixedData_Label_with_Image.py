@@ -83,4 +83,4 @@ def train(model, optimizer, loss_function, epochs,images_batch, numbers_batch,la
             # plt.show()
             clear_output(wait=True)
 
-    return model
+    return network
