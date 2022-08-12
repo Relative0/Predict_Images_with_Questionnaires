@@ -119,6 +119,7 @@ load_images(SubjectsQuestions_df,path)
 
 network, optimizer, loss_function = createmodel()
 
+
 model = train(network,optimizer,loss_function,300,input_images,input_number,output_array)
 print(network.summary())
 print(model.summary())
