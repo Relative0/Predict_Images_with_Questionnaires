@@ -38,7 +38,7 @@ def df_to_dataset(dataframe, shuffle=True, batch_size=20):
   # print(ds)
   return ds
 
-def Create_test_Data(model, Questions, Subjects, width, height):
+def Create_test_Data(network_output, Questions, Subjects, width, height):
     from numpy import asarray
     import pandas as pd
     from PIL import Image
@@ -52,7 +52,7 @@ def Create_test_Data(model, Questions, Subjects, width, height):
     input_images = np.ones((Subjects, width, height))
     Testgreyscale_images = np.ones((Subjects, width, height))
     # Our second input consists of our batch size and the 1 dimensional numerical data.
-    input_number = np.zeros((Subjects, Questions))
+    test_number = np.zeros((Subjects, Questions))
     # The output consists of our batch size and 1 dimensional numerical data.
     Testoutput_array = np.zeros((Subjects, 1))
 
@@ -62,7 +62,6 @@ def Create_test_Data(model, Questions, Subjects, width, height):
     # TestQuestionnaireDF = Standardize(TestQuestionnaireDF)
     Binsize = BinConfigurations()
     BinnedScore = DimensionalBinChoice(Sum_of_Scores, Binsize)
-    # Bin == Label!
 
     TestQuestionnaireDF["Label"] = LabelImage(BinnedScore)
 
@@ -85,13 +84,18 @@ def Create_test_Data(model, Questions, Subjects, width, height):
 
         # Here the image arrays are put into an array
         Testgreyscale_images[subject] = image_arr
-        input_number[subject] = TestSubjectsAnswers[subject]
+        test_number[subject] = TestSubjectsAnswers[subject]
         # ---------------------------------------------------
 
     # input_number = input_number - 1
-    Testoutput_array = Testoutput_array - 1
-    input_images = Testgreyscale_images.reshape(Subjects, width, height, 1)
+    test_images= Testgreyscale_images.reshape(Subjects, width, height, 1)
 
-    # Predict on `X_unseen`
-    y_pred_unseen = model.predict(input_images)
+    predicted_number = network_output.predict(test_images)
+    acc = 0
+
+    for i in range(len(test_images)):
+        if (predicted_number[i] == test_number[i]):
+            acc += 1
+
+    print("Accuracy: ", acc / len(input_images) * 100, "%")
     print(y_pred_unseen)
