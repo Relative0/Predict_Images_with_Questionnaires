@@ -71,6 +71,8 @@ def train(model, optimizer, loss_function, epochs,images_batch, numbers_batch,la
             # Calculating accuracy
             network_output = network(images_batch, numbers_batch)
             preds = np.argmax(network_output, axis=1)
+
+
             acc = 0
             for i in range(len(images_batch)):
                 if (preds[i] == labels[i]):

@@ -63,7 +63,8 @@ def Create_test_Data(network_output, Questions, Subjects, width, height):
     Binsize = BinConfigurations()
     BinnedScore = DimensionalBinChoice(Sum_of_Scores, Binsize)
 
-    TestQuestionnaireDF["Label"] = LabelImage(BinnedScore)
+    output_array = np.array(LabelImage(BinnedScore)) - 1
+    TestQuestionnaireDF["Label"] = output_array
 
     for subject in range(len(TestSubjectsAnswers)):
         # Need to bin the answers for each subject. Then use this bin to be that which is predicted.
@@ -88,14 +89,23 @@ def Create_test_Data(network_output, Questions, Subjects, width, height):
         # ---------------------------------------------------
 
     # input_number = input_number - 1
-    test_images= Testgreyscale_images.reshape(Subjects, width, height, 1)
+    test_images = Testgreyscale_images.reshape(Subjects, width, height, 1)
 
-    predicted_number = network_output.predict(test_images)
+    # predictions = network_output.predict(test_images)
+
+    output = network_output(test_images, test_number)
+    preds = np.argmax(output, axis=1)
+    print(preds)
+
+    # test_network_output = network_output(test_images, test_number)
+    # predicted_number = np.predict(test_network_output)
+
+
     acc = 0
 
     for i in range(len(test_images)):
-        if (predicted_number[i] == test_number[i]):
+        if (preds[i] == Testoutput_array[i]):
             acc += 1
 
     print("Accuracy: ", acc / len(input_images) * 100, "%")
-    print(y_pred_unseen)
+

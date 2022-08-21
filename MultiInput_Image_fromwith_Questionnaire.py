@@ -53,7 +53,7 @@ from SupportFunctions import BinConfigurations, Create_test_Data
 
 # width = height = 3;  imageSize = (width, height)
 ListofVals= []
-Questions = 5; Subjects = 20
+Questions = 5; Subjects = 200
 QuestionsandProbabilities = []
 path = "./ImageWithQuestion"; subjectScores = "Synthetic_Questionnaire_Answers.txt"
 scorefile_path = path + "/" + subjectScores
@@ -120,21 +120,23 @@ SubjectsQuestions_df["Bin"] = output_array
 
 network, optimizer, loss_function = createmodel()
 
-trained_network = train(network,optimizer,loss_function,300,input_images,input_number,output_array)
+trained_network = train(network,optimizer,loss_function,160,input_images,input_number,output_array)
 print(trained_network.summary())
+# network_output = trained_network(input_images, input_number)
+# preds = np.argmax(network_output, axis=1)
 
-network_output = trained_network(input_images,input_number)
+# network_output = trained_network(input_images,input_number)
 
 
-Create_test_Data(network_output, Questions, Subjects, width, height)
-
-preds = np.argmax(network_output, axis=1)
-acc = 0
-for i in range(len(input_images)):
-    if (preds[i] == output_array[i]):
-        acc += 1
-
-print("Accuracy: ", acc / len(input_images) * 100, "%")
+Create_test_Data(trained_network, Questions, Subjects, width, height)
+#
+# preds = np.argmax(network_output, axis=1)
+# acc = 0
+# for i in range(len(input_images)):
+#     if (preds[i] == output_array[i]):
+#         acc += 1
+#
+# print("Accuracy: ", acc / len(input_images) * 100, "%")
 
 
 
