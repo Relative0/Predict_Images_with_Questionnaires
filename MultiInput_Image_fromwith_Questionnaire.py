@@ -26,6 +26,7 @@ import random
 import numpy as np
 from numpy import asarray
 import pandas as pd
+import shap
 from pandas import DataFrame
 from matplotlib import pyplot as plt
 import tensorflow as tf
@@ -53,7 +54,7 @@ from SupportFunctions import BinConfigurations, Create_test_Data
 
 # width = height = 3;  imageSize = (width, height)
 ListofVals= []
-Questions = 5; Subjects = 200
+Questions = 20; Subjects = 500
 QuestionsandProbabilities = []
 path = "./ImageWithQuestion"; subjectScores = "Synthetic_Questionnaire_Answers.txt"
 scorefile_path = path + "/" + subjectScores
@@ -120,7 +121,7 @@ SubjectsQuestions_df["Bin"] = output_array
 
 network, optimizer, loss_function = createmodel()
 
-trained_network = train(network,optimizer,loss_function,160,input_images,input_number,output_array)
+trained_network = train(network,optimizer,loss_function,300,input_images,input_number,output_array)
 print(trained_network.summary())
 # network_output = trained_network(input_images, input_number)
 # preds = np.argmax(network_output, axis=1)

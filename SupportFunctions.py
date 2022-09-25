@@ -2,6 +2,7 @@ import numpy as np
 import os
 import random
 import csv
+import shap
 
 from Questionnaire import createQuestionnaire, load_Subject_Questions
 from Image import Questionnaire_Image, load_images, LabelImage
@@ -13,11 +14,11 @@ def BinConfigurations():
     # Defines the number and AUC of each bin array.
     # bin = [0]
     # bin = [-.431, .431]
-    bin = [-.674, 0, .674]
+    # bin = [-.674, 0, .674]
     # bin = [-.842, -0.253, 0.253, .842]
     # bin = [-0.967, -0.431, 0, 0.431, 0.967]
     # bin = [-1.068, -0.566, -0.18, 0.18, 0.566, 1.068]
-    # bin = [-1.15, -.674, -.319, 0, .319, .674, 1.15]
+    bin = [-1.15, -.674, -.319, 0, .319, .674, 1.15]
 
     return bin
 
@@ -109,3 +110,32 @@ def Create_test_Data(network_output, Questions, Subjects, width, height):
 
     print("Accuracy: ", acc / len(input_images) * 100, "%")
 
+
+    # SHAP testing - DOESN'T work - but I think it possible that the reason it doesn't as, while the example here:
+    # https://coderzcolumn.com/tutorials/artificial-intelligence/shap-values-for-image-classification-tasks-keras
+    # works my model is a combined model: x = tf.concat([N, I], 1)  # Concatenate through axis #1 - whereas their
+    # model is just of a flattened image. Maybe if I can somehow flatten my concatenation?
+
+    # masker = shap.maskers.Image("inpaint_telea", test_images[0].shape)
+    #
+    # classes =  np.unique(output_array)
+    #
+    # class_labels = []
+    #
+    # for i in range(len(Binsize)+1):
+    #         class_labels.append("ConfigurationLevel_" + str(i + 1))
+    # mapping = dict(zip(classes, class_labels))
+    #
+    # explainer = shap.Explainer(network_output, masker, output_names=class_labels)
+    #
+    # # X_train, X_test = input_images.reshape(-1,28,28,1), input_images.reshape(-1,28,28,1)
+    # # inputval = input_images[:4]
+    # flipped_value = shap.Explanation.argsort.flip[:5]
+    # shap_values = explainer([test_number[:4], test_images[:4]], outputs=flipped_value)
+    #
+    # print(shap_values.shape)
+
+    # print("Actual Labels    : {}".format([mapping[i] for i in Y_test[:4]]))
+    # probs = trained_network.predict(X_test[:4])
+    # print("Predicted Labels : {}".format([mapping[i] for i in np.argmax(probs, axis=1)]))
+    # print("Probabilities : {}".format(np.max(probs, axis=1)))
